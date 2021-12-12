@@ -1,3 +1,4 @@
+Attribute VB_Name = "countingpine"
 '' see also https://stackoverflow.com/questions/6334917/how-can-i-trim-the-end-of-a-binary-file
 '' based in part on http://vbnet.mvps.org/index.html?code/fileapi/truncaterandomfile.htm
 Option Explicit
