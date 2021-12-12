@@ -112,6 +112,15 @@ Begin VB.Form config
          Shortcut        =   ^Q
       End
    End
+   Begin VB.Menu menuopt 
+      Caption         =   "Op&tion"
+      Begin VB.Menu menureset 
+         Caption         =   "&Reset mapper-specific variables"
+         Checked         =   -1  'True
+         Enabled         =   0   'False
+         Shortcut        =   {F5}
+      End
+   End
    Begin VB.Menu menuhelp 
       Caption         =   "&Help"
       Begin VB.Menu menuabout 
@@ -424,13 +433,10 @@ On Error GoTo ErrHandler
     Close
     Open CommonDialog1.filename For Binary Access Read Write As #10
     Dim pos As Long
-    pos = LOF(10) + 1
+    If isgbx = False Then pos = LOF(10) + 1 Else pos = LOF(10) - 63
     Seek #10, pos
     Put #10, , footer
-    Close
-    Unload config
-    Set config = Nothing
-    Exit Sub
+    MsgBox "File saved.", vbOKOnly, "GBXBuilder"
 ErrHandler:
     Err.Clear
     Close
@@ -449,6 +455,7 @@ On Error GoTo ErrHandler
     FileCopy original, CommonDialog1.filename
     Open original For Binary As #1
     truncatefile CommonDialog1.filename, LOF(1) - 64
+    MsgBox "File saved.", vbOKOnly, "GBXBuilder"
 ErrHandler:
     Err.Clear
     Close
@@ -475,6 +482,17 @@ ErrHandler:
     Err.Clear
     Close
     Exit Sub
+End Sub
+
+Private Sub menureset_Click()
+    Dim counter As Byte
+    counter = 16
+    Do
+        footer(counter) = 0
+        counter = counter + 1
+    Loop While counter < 48
+    menureset.Checked = True
+    menureset.Enabled = False
 End Sub
 
 Private Sub menuabout_Click()
@@ -586,6 +604,26 @@ On Error GoTo ErrHandler
             mappertype.Text = "(unknown mapper)"
         Else
             mappertype.ListIndex = index
+        End If
+        Dim counter As Byte
+        Dim buffer As Byte
+        counter = 47
+        index = 16
+        Do
+            Get #1, LOF(1) - counter, buffer
+            footer(index) = buffer
+            counter = counter - 1
+            index = index + 1
+        Loop While index < 48
+        Dim check As Long
+        check = 0
+        Do
+            counter = counter + 1
+            check = check + CLng(footer(counter))
+        Loop While counter < 47
+        If check <> 0 Then
+            menureset.Checked = False
+            menureset.Enabled = True
         End If
         Get #1, LOF(1) - 59, battery
         isram.Value = battery
