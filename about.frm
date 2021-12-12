@@ -56,7 +56,7 @@ Begin VB.Form about
    End
    Begin VB.Label Label1 
       Alignment       =   2  'Center
-      Caption         =   "GBXBuilder 1.0 Rev A"
+      Caption         =   "GBXBuilder 1.0 Rev B"
       BeginProperty Font 
          Name            =   "MS Sans Serif"
          Size            =   8.25
