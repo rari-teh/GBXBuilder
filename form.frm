@@ -219,7 +219,7 @@ BackToLoad:
     Close
     Exit Sub
 ErrHandler:
-    Err.Clear
+    err.Clear
     Close
     Unload config
     Set config = Nothing
@@ -246,6 +246,22 @@ On Error GoTo ErrHandler
             Exit Sub
         End If
     End If
+    If mappertype.ListIndex < 0 Then
+        If Len(mappertype.Text) > 4 Then
+            MsgBox "Custom mapper identifier cannot have more than four characters.", vbOKOnly, "GBXBuilder Error"
+            Exit Sub
+        End If
+        If Len(mappertype.Text) = 0 Then
+            mappertype.ListIndex = 0
+        Else
+            Dim char As Byte
+            char = 0
+            Do
+                mapper(char) = FromAscii(mappertype.Text, char + 1)
+                char = char + 1
+            Loop While char < 4
+        End If
+    End If
     With CommonDialog1
         .CancelError = True
         .DialogTitle = "Save GBX file"
@@ -262,136 +278,163 @@ On Error GoTo ErrHandler
     rumble = isrumble.Value
     timer = istimer.Value
     Rem Figure mapper
+    Rem ROM
     If mappertype.ListIndex = 0 Then
         mapper(0) = 82
         mapper(1) = 79
         mapper(2) = 77
         mapper(3) = 0
+    Rem MBC1
     ElseIf mappertype.ListIndex = 1 Then
         mapper(0) = 77
         mapper(1) = 66
         mapper(2) = 67
         mapper(3) = 49
+    Rem MBC2
     ElseIf mappertype.ListIndex = 2 Then
         mapper(0) = 77
         mapper(1) = 66
         mapper(2) = 67
         mapper(3) = 50
+    Rem MBC3
     ElseIf mappertype.ListIndex = 3 Then
         mapper(0) = 77
         mapper(1) = 66
         mapper(2) = 67
         mapper(3) = 51
+    Rem MBC5
     ElseIf mappertype.ListIndex = 4 Then
         mapper(0) = 77
         mapper(1) = 66
         mapper(2) = 67
         mapper(3) = 53
+    Rem MBC7
     ElseIf mappertype.ListIndex = 5 Then
         mapper(0) = 77
         mapper(1) = 66
         mapper(2) = 67
         mapper(3) = 55
+    Rem MB1M
     ElseIf mappertype.ListIndex = 6 Then
         mapper(0) = 77
         mapper(1) = 66
         mapper(2) = 49
         mapper(3) = 77
+    Rem MMM1
     ElseIf mappertype.ListIndex = 7 Then
         mapper(0) = 77
         mapper(1) = 77
         mapper(2) = 77
         mapper(3) = 49
+    Rem CAMR
     ElseIf mappertype.ListIndex = 8 Then
         mapper(0) = 67
         mapper(1) = 65
         mapper(2) = 77
         mapper(3) = 82
+    Rem HUC1
     ElseIf mappertype.ListIndex = 9 Then
         mapper(0) = 72
         mapper(1) = 85
         mapper(2) = 67
         mapper(3) = 49
+    Rem HUC3
     ElseIf mappertype.ListIndex = 10 Then
         mapper(0) = 72
         mapper(1) = 85
         mapper(2) = 67
         mapper(3) = 51
+    Rem TAM5
     ElseIf mappertype.ListIndex = 11 Then
         mapper(0) = 84
         mapper(1) = 65
         mapper(2) = 77
         mapper(3) = 53
+    Rem M161
     ElseIf mappertype.ListIndex = 12 Then
         mapper(0) = 77
         mapper(1) = 49
         mapper(2) = 54
         mapper(3) = 49
+    Rem BBD
     ElseIf mappertype.ListIndex = 13 Then
         mapper(0) = 66
         mapper(1) = 66
         mapper(2) = 68
         mapper(3) = 0
+    Rem HITK
     ElseIf mappertype.ListIndex = 14 Then
         mapper(0) = 72
         mapper(1) = 73
         mapper(2) = 84
         mapper(3) = 75
+    Rem SNTX
     ElseIf mappertype.ListIndex = 15 Then
         mapper(0) = 83
         mapper(1) = 78
         mapper(2) = 84
         mapper(3) = 88
+    Rem NTO1
     ElseIf mappertype.ListIndex = 16 Then
         mapper(0) = 78
         mapper(1) = 84
         mapper(2) = 79
         mapper(3) = 49
+    Rem NTO2
     ElseIf mappertype.ListIndex = 17 Then
         mapper(0) = 78
         mapper(1) = 84
         mapper(2) = 79
         mapper(3) = 50
+    Rem NTN
     ElseIf mappertype.ListIndex = 18 Then
         mapper(0) = 78
         mapper(1) = 84
         mapper(2) = 78
         mapper(3) = 0
+    Rem LICH
     ElseIf mappertype.ListIndex = 19 Then
         mapper(0) = 76
         mapper(1) = 73
         mapper(2) = 67
         mapper(3) = 72
+    Rem LBMC
     ElseIf mappertype.ListIndex = 20 Then
         mapper(0) = 76
         mapper(1) = 66
         mapper(2) = 77
         mapper(3) = 67
+    Rem LIBA
     ElseIf mappertype.ListIndex = 21 Then
         mapper(0) = 76
         mapper(1) = 73
         mapper(2) = 66
         mapper(3) = 65
+    Rem PKJD
     ElseIf mappertype.ListIndex = 22 Then
         mapper(0) = 80
         mapper(1) = 75
         mapper(2) = 74
         mapper(3) = 68
+    Rem WISD
     ElseIf mappertype.ListIndex = 23 Then
         mapper(0) = 87
         mapper(1) = 73
         mapper(2) = 83
         mapper(3) = 68
+    Rem SAM1
     ElseIf mappertype.ListIndex = 24 Then
         mapper(0) = 83
         mapper(1) = 65
         mapper(2) = 77
         mapper(3) = 49
+    Rem SAM2
     ElseIf mappertype.ListIndex = 25 Then
         mapper(0) = 83
         mapper(1) = 65
         mapper(2) = 77
         mapper(3) = 50
+    Rem ROCK
     ElseIf mappertype.ListIndex = 26 Then
         mapper(0) = 82
         mapper(1) = 79
@@ -436,9 +479,11 @@ On Error GoTo ErrHandler
     If isgbx = False Then pos = LOF(10) + 1 Else pos = LOF(10) - 63
     Seek #10, pos
     Put #10, , footer
-    MsgBox "File saved.", vbOKOnly, "GBXBuilder"
+    MsgBox "File saved successfully.", vbOKOnly, "GBXBuilder"
+    Close
+    Exit Sub
 ErrHandler:
-    Err.Clear
+    err.Clear
     Close
     Exit Sub
 End Sub
@@ -455,9 +500,9 @@ On Error GoTo ErrHandler
     FileCopy original, CommonDialog1.filename
     Open original For Binary As #1
     truncatefile CommonDialog1.filename, LOF(1) - 64
-    MsgBox "File saved.", vbOKOnly, "GBXBuilder"
+    MsgBox "File saved successfully.", vbOKOnly, "GBXBuilder"
 ErrHandler:
-    Err.Clear
+    err.Clear
     Close
     Exit Sub
 End Sub
@@ -479,7 +524,7 @@ On Error GoTo ErrHandler
         suggestion = prevsuggestion
     End If
 ErrHandler:
-    Err.Clear
+    err.Clear
     Close
     Exit Sub
 End Sub
@@ -601,7 +646,7 @@ On Error GoTo ErrHandler
         If mapper(0) = 83 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 50 Then index = 25
         If mapper(0) = 82 Then If mapper(1) = 79 Then If mapper(2) = 67 Then If mapper(3) = 75 Then index = 26
         If index = 255 Then
-            mappertype.Text = "(unknown mapper)"
+            mappertype.Text = ToAscii(mapper)
         Else
             mappertype.ListIndex = index
         End If
@@ -654,9 +699,9 @@ ErrHandler:
 End Sub
 
 Public Function ToByteArray(ByVal lng As Long) As Byte()
-    Dim ByteArray(3) As Byte
-    CopyMemory ByteArray(0), ByVal VarPtr(lng), Len(lng)
-    ToByteArray = ByteArray
+    Dim bytearray(3) As Byte
+    CopyMemory bytearray(0), ByVal VarPtr(lng), Len(lng)
+    ToByteArray = bytearray
 End Function
 
 Public Function ToLong(vIn() As Byte) As Long
@@ -668,3 +713,139 @@ Public Function ToLong(vIn() As Byte) As Long
     Next i
     ToLong = vOut
 End Function
+
+Public Function FromAscii(ByVal str As String, ByVal counter As Byte) As Byte
+On Error GoTo ErrHandler
+    Dim result As Byte
+    Dim char As String
+    result = 0
+    char = Mid(str, counter, 1)
+    If char = "!" Then result = 33
+    If char = "+" Then result = 43
+    If char = "0" Then result = 48
+    If char = "1" Then result = 49
+    If char = "2" Then result = 50
+    If char = "3" Then result = 51
+    If char = "4" Then result = 52
+    If char = "5" Then result = 53
+    If char = "6" Then result = 54
+    If char = "7" Then result = 55
+    If char = "8" Then result = 56
+    If char = "9" Then result = 57
+    If char = "?" Then result = 63
+    If char = "A" Then result = 65
+    If char = "B" Then result = 66
+    If char = "C" Then result = 67
+    If char = "D" Then result = 68
+    If char = "E" Then result = 69
+    If char = "F" Then result = 70
+    If char = "G" Then result = 71
+    If char = "H" Then result = 72
+    If char = "I" Then result = 73
+    If char = "J" Then result = 74
+    If char = "K" Then result = 75
+    If char = "L" Then result = 76
+    If char = "M" Then result = 77
+    If char = "N" Then result = 78
+    If char = "O" Then result = 79
+    If char = "P" Then result = 80
+    If char = "Q" Then result = 81
+    If char = "R" Then result = 82
+    If char = "S" Then result = 83
+    If char = "T" Then result = 84
+    If char = "U" Then result = 85
+    If char = "V" Then result = 86
+    If char = "W" Then result = 87
+    If char = "X" Then result = 88
+    If char = "Y" Then result = 89
+    If char = "Z" Then result = 90
+    If char = "a" Then result = 65
+    If char = "b" Then result = 66
+    If char = "c" Then result = 67
+    If char = "d" Then result = 68
+    If char = "e" Then result = 69
+    If char = "f" Then result = 70
+    If char = "g" Then result = 71
+    If char = "h" Then result = 72
+    If char = "i" Then result = 73
+    If char = "j" Then result = 74
+    If char = "k" Then result = 75
+    If char = "l" Then result = 76
+    If char = "m" Then result = 77
+    If char = "n" Then result = 78
+    If char = "o" Then result = 79
+    If char = "p" Then result = 80
+    If char = "q" Then result = 81
+    If char = "r" Then result = 82
+    If char = "s" Then result = 83
+    If char = "t" Then result = 84
+    If char = "u" Then result = 85
+    If char = "v" Then result = 86
+    If char = "w" Then result = 87
+    If char = "x" Then result = 88
+    If char = "y" Then result = 89
+    If char = "z" Then result = 90
+    If result = 0 Then If char <> "" Then err.Raise -1
+    FromAscii = result
+    Exit Function
+ErrHandler:
+    MsgBox "Illegal character in mapper identifier.", vbOKOnly, "GBXBuilder Error"
+    err.Raise -1
+    Exit Function
+End Function
+
+Public Function ToAscii(bytearray() As Byte) As String
+    Dim counter As Byte
+    Dim str As String
+    counter = 0
+    str = ""
+    If bytearray(0) = 0 Then err.Raise -1
+    If bytearray(1) = 0 Then If bytearray(2) <> 0 Then err.Raise -1
+    Do
+        If bytearray(counter) = 0 Then If bytearray(3) <> 0 Then err.Raise -1
+        If bytearray(counter) = 33 Then str = str & "!"
+        If bytearray(counter) = 43 Then str = str & "+"
+        If bytearray(counter) = 48 Then str = str & "0"
+        If bytearray(counter) = 49 Then str = str & "1"
+        If bytearray(counter) = 50 Then str = str & "2"
+        If bytearray(counter) = 51 Then str = str & "3"
+        If bytearray(counter) = 52 Then str = str & "4"
+        If bytearray(counter) = 53 Then str = str & "5"
+        If bytearray(counter) = 54 Then str = str & "6"
+        If bytearray(counter) = 55 Then str = str & "7"
+        If bytearray(counter) = 56 Then str = str & "8"
+        If bytearray(counter) = 57 Then str = str & "9"
+        If bytearray(counter) = 63 Then str = str & "?"
+        If bytearray(counter) = 65 Then str = str & "A"
+        If bytearray(counter) = 66 Then str = str & "B"
+        If bytearray(counter) = 67 Then str = str & "C"
+        If bytearray(counter) = 68 Then str = str & "D"
+        If bytearray(counter) = 69 Then str = str & "E"
+        If bytearray(counter) = 70 Then str = str & "F"
+        If bytearray(counter) = 71 Then str = str & "G"
+        If bytearray(counter) = 72 Then str = str & "H"
+        If bytearray(counter) = 73 Then str = str & "I"
+        If bytearray(counter) = 74 Then str = str & "J"
+        If bytearray(counter) = 75 Then str = str & "K"
+        If bytearray(counter) = 76 Then str = str & "L"
+        If bytearray(counter) = 77 Then str = str & "M"
+        If bytearray(counter) = 78 Then str = str & "N"
+        If bytearray(counter) = 79 Then str = str & "O"
+        If bytearray(counter) = 80 Then str = str & "P"
+        If bytearray(counter) = 81 Then str = str & "Q"
+        If bytearray(counter) = 82 Then str = str & "R"
+        If bytearray(counter) = 83 Then str = str & "S"
+        If bytearray(counter) = 84 Then str = str & "T"
+        If bytearray(counter) = 85 Then str = str & "U"
+        If bytearray(counter) = 86 Then str = str & "V"
+        If bytearray(counter) = 87 Then str = str & "W"
+        If bytearray(counter) = 88 Then str = str & "X"
+        If bytearray(counter) = 89 Then str = str & "Y"
+        If bytearray(counter) = 90 Then str = str & "Z"
+        counter = counter + 1
+    Loop While counter < 4
+    ToAscii = str
+    Exit Function
+End Function
+
+
