@@ -3,4 +3,6 @@ This program creates, modifies and removes metadata on Game Boy (Color) ROMs for
 
 The GBX ROM format was created by [taizou](https://github.com/tzlion). The file format specification is available [here](http://hhug.me/gbx/1.0).
 
+This program uses truncatefile.bas by [countingpine](https://github.com/countingpine).
+
 Made with Microsoft Visual Basic 6.0
