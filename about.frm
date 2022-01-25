@@ -31,7 +31,7 @@ Begin VB.Form about
       Width           =   2655
    End
    Begin VB.Label Label4 
-      Caption         =   "Build date: Dec 12, 2021"
+      Caption         =   "Build date: Jan 25, 2022"
       Height          =   255
       Left            =   120
       TabIndex        =   3
@@ -56,7 +56,7 @@ Begin VB.Form about
    End
    Begin VB.Label Label1 
       Alignment       =   2  'Center
-      Caption         =   "GBXBuilder 1.0 Rev D"
+      Caption         =   "GBXBuilder 1.0 Rev E"
       BeginProperty Font 
          Name            =   "MS Sans Serif"
          Size            =   8.25

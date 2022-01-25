@@ -70,7 +70,7 @@ Begin VB.Form config
       Height          =   315
       ItemData        =   "form.frx":1542
       Left            =   960
-      List            =   "form.frx":1597
+      List            =   "form.frx":159D
       TabIndex        =   1
       Text            =   "(no mapper)"
       Top             =   120
@@ -219,7 +219,7 @@ BackToLoad:
     Close
     Exit Sub
 ErrHandler:
-    err.Clear
+    Err.Clear
     Close
     Unload config
     Set config = Nothing
@@ -440,6 +440,18 @@ On Error GoTo ErrHandler
         mapper(1) = 79
         mapper(2) = 67
         mapper(3) = 75
+    Rem NGHK
+    ElseIf mappertype.ListIndex = 27 Then
+        mapper(0) = 78
+        mapper(1) = 71
+        mapper(2) = 72
+        mapper(3) = 75
+    Rem GB81
+    ElseIf mappertype.ListIndex = 28 Then
+        mapper(0) = 71
+        mapper(1) = 66
+        mapper(2) = 56
+        mapper(3) = 49
     End If
     Rem Mount array begin
     Rem Mapper
@@ -483,7 +495,7 @@ On Error GoTo ErrHandler
     Close
     Exit Sub
 ErrHandler:
-    err.Clear
+    Err.Clear
     Close
     Exit Sub
 End Sub
@@ -502,7 +514,7 @@ On Error GoTo ErrHandler
     truncatefile CommonDialog1.filename, LOF(1) - 64
     MsgBox "File saved successfully.", vbOKOnly, "GBXBuilder"
 ErrHandler:
-    err.Clear
+    Err.Clear
     Close
     Exit Sub
 End Sub
@@ -524,7 +536,7 @@ On Error GoTo ErrHandler
         suggestion = prevsuggestion
     End If
 ErrHandler:
-    err.Clear
+    Err.Clear
     Close
     Exit Sub
 End Sub
@@ -645,6 +657,8 @@ On Error GoTo ErrHandler
         If mapper(0) = 83 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 49 Then index = 24
         If mapper(0) = 83 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 50 Then index = 25
         If mapper(0) = 82 Then If mapper(1) = 79 Then If mapper(2) = 67 Then If mapper(3) = 75 Then index = 26
+        If mapper(0) = 78 Then If mapper(1) = 71 Then If mapper(2) = 72 Then If mapper(3) = 75 Then index = 27
+        If mapper(0) = 71 Then If mapper(1) = 66 Then If mapper(2) = 56 Then If mapper(3) = 49 Then index = 28
         If index = 255 Then
             mappertype.Text = ToAscii(mapper)
         Else
@@ -785,12 +799,12 @@ On Error GoTo ErrHandler
     If char = "x" Then result = 88
     If char = "y" Then result = 89
     If char = "z" Then result = 90
-    If result = 0 Then If char <> "" Then err.Raise -1
+    If result = 0 Then If char <> "" Then Err.Raise -1
     FromAscii = result
     Exit Function
 ErrHandler:
     MsgBox "Illegal character in mapper identifier.", vbOKOnly, "GBXBuilder Error"
-    err.Raise -1
+    Err.Raise -1
     Exit Function
 End Function
 
@@ -799,10 +813,10 @@ Public Function ToAscii(bytearray() As Byte) As String
     Dim str As String
     counter = 0
     str = ""
-    If bytearray(0) = 0 Then err.Raise -1
-    If bytearray(1) = 0 Then If bytearray(2) <> 0 Then err.Raise -1
+    If bytearray(0) = 0 Then Err.Raise -1
+    If bytearray(1) = 0 Then If bytearray(2) <> 0 Then Err.Raise -1
     Do
-        If bytearray(counter) = 0 Then If bytearray(3) <> 0 Then err.Raise -1
+        If bytearray(counter) = 0 Then If bytearray(3) <> 0 Then Err.Raise -1
         If bytearray(counter) = 33 Then str = str & "!"
         If bytearray(counter) = 43 Then str = str & "+"
         If bytearray(counter) = 48 Then str = str & "0"
