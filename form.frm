@@ -14,9 +14,19 @@ Begin VB.Form config
    ScaleHeight     =   1560
    ScaleWidth      =   3600
    StartUpPosition =   3  'Windows Default
-   Begin MSComDlg.CommonDialog CommonDialog1 
+   Begin VB.CommandButton button_msv 
+      Caption         =   "Mapper variables..."
+      CausesValidation=   0   'False
+      Enabled         =   0   'False
+      Height          =   375
       Left            =   1560
-      Top             =   960
+      TabIndex        =   7
+      Top             =   1080
+      Width           =   1695
+   End
+   Begin MSComDlg.CommonDialog CommonDialog1 
+      Left            =   3360
+      Top             =   1200
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -48,7 +58,7 @@ Begin VB.Form config
       Left            =   240
       TabIndex        =   4
       Top             =   1200
-      Width           =   3015
+      Width           =   735
    End
    Begin VB.CheckBox isrumble 
       Caption         =   "Rumble"
@@ -56,7 +66,7 @@ Begin VB.Form config
       Left            =   240
       TabIndex        =   3
       Top             =   840
-      Width           =   3015
+      Width           =   855
    End
    Begin VB.CheckBox isram 
       Caption         =   "Battery (RAM)"
@@ -70,7 +80,7 @@ Begin VB.Form config
       Height          =   315
       ItemData        =   "form.frx":1542
       Left            =   960
-      List            =   "form.frx":159D
+      List            =   "form.frx":15A0
       TabIndex        =   1
       Text            =   "(no mapper)"
       Top             =   120
@@ -113,7 +123,12 @@ Begin VB.Form config
       End
    End
    Begin VB.Menu menuopt 
-      Caption         =   "Op&tion"
+      Caption         =   "Op&tions"
+      Begin VB.Menu menucmsv 
+         Caption         =   "&Custom mapper variables…"
+         Enabled         =   0   'False
+         Shortcut        =   {F12}
+      End
       Begin VB.Menu menureset 
          Caption         =   "&Reset mapper-specific variables"
          Checked         =   -1  'True
@@ -159,6 +174,22 @@ Private romsize As Long
 Private romsizeba() As Byte
 Private ramsize As Long
 Private ramsizeba() As Byte
+Private var1 As Long
+Private var1ba() As Byte
+Private var2 As Long
+Private var2ba() As Byte
+Private var3 As Long
+Private var3ba() As Byte
+Private var4 As Long
+Private var4ba() As Byte
+Private var5 As Long
+Private var5ba() As Byte
+Private var6 As Long
+Private var6ba() As Byte
+Private var7 As Long
+Private var7ba() As Byte
+Private var8 As Long
+Private var8ba() As Byte
 Rem Fixed declarations
 Private footersize As Byte
 Public major As Byte
@@ -166,6 +197,44 @@ Public minor As Byte
 Private magic() As Byte
 Rem Array declaration
 Private footer(63) As Byte
+
+Rem MSV config forms communication variables
+Public sam210 As Byte
+Public sam211 As Byte
+Public sam212 As Byte
+Public gb8110 As Byte
+Rem Public cvar1 As Long
+Rem Public cvar2 As Long
+Rem Public cvar3 As Long
+Rem Public cvar4 As Long
+Rem Public cvar5 As Long
+Rem Public cvar6 As Long
+Rem Public cvar7 As Long
+Rem Public cvar8 As Long
+
+Private Sub button_msv_Click()
+    If mappertype.ListIndex = 25 Then
+        Rem var1 = cvar1 *cmsvs
+        var1ba = ToByteArray(var1)
+        msv_sam2.sam210 = var1ba(3) Mod 2
+        msv_sam2.sam211 = (var1ba(3) \ 2) Mod 2
+        msv_sam2.sam212 = (var1ba(3) \ 4) Mod 2
+        msv_sam2.Show 1
+        var1ba(3) = sam210 + (2 * sam211) + (4 * sam212)
+        var1 = ToLong(var1ba)
+        Rem refreshmsvs *cmsvs
+    ElseIf mappertype.ListIndex = 28 Then
+        Rem var1 = cvar1 *cmsvs
+        var1ba = ToByteArray(var1)
+        msv_gb81.gb8110 = var1ba(3)
+        msv_gb81.Show 1
+        var1ba(3) = gb8110
+        var1 = ToLong(var1ba)
+        Rem refreshmsvs *cmsvs
+    Else
+        MsgBox "This button should be disabled. Please file a bug on GitHub. (ERROR 1046)", vbOKOnly, "GBXBuilder Error"
+    End If
+End Sub
 
 Private Sub Form_Load()
 On Error GoTo ErrHandler
@@ -192,6 +261,19 @@ On Error GoTo ErrHandler
     ramsizeba(1) = 0
     ramsizeba(2) = 0
     ramsizeba(3) = 0
+    ReDim var1ba(3)
+    ReDim var2ba(3)
+    ReDim var3ba(3)
+    ReDim var4ba(3)
+    ReDim var5ba(3)
+    ReDim var6ba(3)
+    ReDim var7ba(3)
+    ReDim var8ba(3)
+    clearmsvs
+    sam210 = 0
+    sam211 = 0
+    sam212 = 0
+    gb8110 = 0
     Rem Set fixed values
     footersize = 64
     major = 1
@@ -238,6 +320,34 @@ Private Sub isram_Click()
     End If
 End Sub
 
+Private Sub mappertype_Change()
+    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 28 Then button_msv.Enabled = True Else button_msv.Enabled = False
+End Sub
+
+Private Sub mappertype_Click()
+    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 28 Then button_msv.Enabled = True Else button_msv.Enabled = False
+End Sub
+
+Private Sub menucmsv_Click()
+    Rem cmsv.cvar1 = var1
+    Rem cmsv.cvar2 = var2
+    Rem cmsv.cvar3 = var3
+    Rem cmsv.cvar4 = var4
+    Rem cmsv.cvar5 = var5
+    Rem cmsv.cvar6 = var6
+    Rem cmsv.cvar7 = var7
+    Rem cmsv.cvar8 = var8
+    Rem cmsv.Show
+    Rem var1 = cvar1
+    Rem var2 = cvar2
+    Rem var3 = cvar3
+    Rem var4 = cvar4
+    Rem var5 = cvar5
+    Rem var6 = cvar6
+    Rem var7 = cvar7
+    Rem var8 = cvar8
+End Sub
+
 Private Sub menusave_Click()
 On Error GoTo ErrHandler
     If isram = 1 Then
@@ -269,7 +379,16 @@ On Error GoTo ErrHandler
         .Filter = "GBX format ROM (*.gbx)|*.gbx|"
         .ShowSave
     End With
-    FileCopy original, CommonDialog1.filename
+    continuesave
+ErrHandler:
+    Err.Clear
+    Close
+    Exit Sub
+End Sub
+
+Private Sub continuesave()
+On Error GoTo ErrHandler
+FileCopy original, CommonDialog1.filename
     ramsize = ramtext.Text
     If ramtext.Enabled = False Then
         ramsize = 0
@@ -452,6 +571,12 @@ On Error GoTo ErrHandler
         mapper(1) = 66
         mapper(2) = 56
         mapper(3) = 49
+    Rem TPP1
+    ElseIf mappertype.ListIndex = 29 Then
+        mapper(0) = 84
+        mapper(1) = 80
+        mapper(2) = 80
+        mapper(3) = 49
     End If
     Rem Mount array begin
     Rem Mapper
@@ -477,6 +602,47 @@ On Error GoTo ErrHandler
     footer(13) = ramsizeba(2)
     footer(14) = ramsizeba(1)
     footer(15) = ramsizeba(0)
+    Rem MSVs
+    var1ba = ToByteArray(var1)
+    footer(16) = var1ba(3)
+    footer(17) = var1ba(2)
+    footer(18) = var1ba(1)
+    footer(19) = var1ba(0)
+    var2ba = ToByteArray(var2)
+    footer(20) = var2ba(3)
+    footer(21) = var2ba(2)
+    footer(22) = var2ba(1)
+    footer(23) = var2ba(0)
+    var3ba = ToByteArray(var3)
+    footer(24) = var3ba(3)
+    footer(25) = var3ba(2)
+    footer(26) = var3ba(1)
+    footer(27) = var3ba(0)
+    var4ba = ToByteArray(var4)
+    footer(28) = var4ba(3)
+    footer(29) = var4ba(2)
+    footer(30) = var4ba(1)
+    footer(31) = var4ba(0)
+    var5ba = ToByteArray(var5)
+    footer(32) = var5ba(3)
+    footer(33) = var5ba(2)
+    footer(34) = var5ba(1)
+    footer(35) = var5ba(0)
+    var6ba = ToByteArray(var6)
+    footer(36) = var6ba(3)
+    footer(37) = var6ba(2)
+    footer(38) = var6ba(1)
+    footer(39) = var6ba(0)
+    var7ba = ToByteArray(var7)
+    footer(40) = var7ba(3)
+    footer(41) = var7ba(2)
+    footer(42) = var7ba(1)
+    footer(43) = var7ba(0)
+    var8ba = ToByteArray(var8)
+    footer(44) = var8ba(3)
+    footer(45) = var8ba(2)
+    footer(46) = var8ba(1)
+    footer(47) = var8ba(0)
     Rem Footer
     footer(51) = footersize
     footer(55) = major
@@ -495,6 +661,7 @@ On Error GoTo ErrHandler
     Close
     Exit Sub
 ErrHandler:
+    MsgBox "Error saving file!", vbOKOnly, "GBXBuilder Error"
     Err.Clear
     Close
     Exit Sub
@@ -542,12 +709,7 @@ ErrHandler:
 End Sub
 
 Private Sub menureset_Click()
-    Dim counter As Byte
-    counter = 16
-    Do
-        footer(counter) = 0
-        counter = counter + 1
-    Loop While counter < 48
+    clearmsvs
     menureset.Checked = True
     menureset.Enabled = False
 End Sub
@@ -659,6 +821,7 @@ On Error GoTo ErrHandler
         If mapper(0) = 82 Then If mapper(1) = 79 Then If mapper(2) = 67 Then If mapper(3) = 75 Then index = 26
         If mapper(0) = 78 Then If mapper(1) = 71 Then If mapper(2) = 72 Then If mapper(3) = 75 Then index = 27
         If mapper(0) = 71 Then If mapper(1) = 66 Then If mapper(2) = 56 Then If mapper(3) = 49 Then index = 28
+        If mapper(0) = 84 Then If mapper(1) = 80 Then If mapper(3) = 80 Then If mapper(3) = 49 Then index = 29
         If index = 255 Then
             mappertype.Text = ToAscii(mapper)
         Else
@@ -684,6 +847,47 @@ On Error GoTo ErrHandler
             menureset.Checked = False
             menureset.Enabled = True
         End If
+        var1ba(3) = footer(16)
+        var1ba(2) = footer(17)
+        var1ba(1) = footer(18)
+        var1ba(0) = footer(19)
+        var1 = ToLong(var1ba)
+        var2ba(3) = footer(20)
+        var2ba(2) = footer(21)
+        var2ba(1) = footer(22)
+        var2ba(0) = footer(23)
+        var2 = ToLong(var2ba)
+        var3ba(3) = footer(24)
+        var3ba(2) = footer(25)
+        var3ba(1) = footer(26)
+        var3ba(0) = footer(27)
+        var3 = ToLong(var3ba)
+        var4ba(3) = footer(28)
+        var4ba(2) = footer(29)
+        var4ba(1) = footer(30)
+        var4ba(0) = footer(31)
+        var4 = ToLong(var4ba)
+        var5ba(3) = footer(32)
+        var5ba(2) = footer(33)
+        var5ba(1) = footer(34)
+        var5ba(0) = footer(35)
+        var5 = ToLong(var5ba)
+        var6ba(3) = footer(36)
+        var6ba(2) = footer(37)
+        var6ba(1) = footer(38)
+        var6ba(0) = footer(39)
+        var6 = ToLong(var6ba)
+        var7ba(3) = footer(40)
+        var7ba(2) = footer(41)
+        var7ba(1) = footer(42)
+        var7ba(0) = footer(43)
+        var7 = ToLong(var7ba)
+        var8ba(3) = footer(44)
+        var8ba(2) = footer(45)
+        var8ba(1) = footer(46)
+        var8ba(0) = footer(47)
+        var8 = ToLong(var8ba)
+        Rem refreshmsvs *cmsvs
         Get #1, LOF(1) - 59, battery
         isram.Value = battery
         Get #1, LOF(1) - 58, rumble
@@ -710,6 +914,60 @@ ErrHandler:
     Unload config
     Set config = Nothing
     Exit Sub
+End Sub
+
+Private Sub clearmsvs()
+    var1 = 0
+    var1ba(0) = 0
+    var1ba(1) = 0
+    var1ba(2) = 0
+    var1ba(3) = 0
+    var2 = 0
+    var2ba(0) = 0
+    var2ba(1) = 0
+    var2ba(2) = 0
+    var2ba(3) = 0
+    var3 = 0
+    var3ba(0) = 0
+    var3ba(1) = 0
+    var3ba(2) = 0
+    var3ba(3) = 0
+    var4 = 0
+    var4ba(0) = 0
+    var4ba(1) = 0
+    var4ba(2) = 0
+    var4ba(3) = 0
+    var5 = 0
+    var5ba(0) = 0
+    var5ba(1) = 0
+    var5ba(2) = 0
+    var5ba(3) = 0
+    var6 = 0
+    var6ba(0) = 0
+    var6ba(1) = 0
+    var6ba(2) = 0
+    var6ba(3) = 0
+    var7 = 0
+    var7ba(0) = 0
+    var7ba(1) = 0
+    var7ba(2) = 0
+    var7ba(3) = 0
+    var8 = 0
+    var8ba(0) = 0
+    var8ba(1) = 0
+    var8ba(2) = 0
+    var8ba(3) = 0
+End Sub
+
+Private Sub refreshmsvs()
+    Rem cvar1 = var1
+    Rem cvar2 = var2
+    Rem cvar3 = var3
+    Rem cvar4 = var4
+    Rem cvar5 = var5
+    Rem cvar6 = var6
+    Rem cvar7 = var7
+    Rem cvar8 = var8
 End Sub
 
 Public Function ToByteArray(ByVal lng As Long) As Byte()
