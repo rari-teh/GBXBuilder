@@ -380,8 +380,12 @@ On Error GoTo ErrHandler
     End If
     If mappertype.ListIndex < 0 Then
         If Len(mappertype.Text) > 4 Then
-            MsgBox "Custom mapper identifier cannot have more than four characters.", vbOKOnly, "GBXBuilder Error"
-            Exit Sub
+            If mappertype.Text = "(no mapper)" Then
+                mappertype.Text = "ROM"
+            Else
+                MsgBox "Custom mapper identifier cannot have more than four characters.", vbOKOnly, "GBXBuilder Error"
+                Exit Sub
+            End If
         End If
         If Len(mappertype.Text) = 0 Then
             mappertype.ListIndex = 0
