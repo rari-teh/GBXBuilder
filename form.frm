@@ -126,7 +126,6 @@ Begin VB.Form config
       Caption         =   "Op&tions"
       Begin VB.Menu menucmsv 
          Caption         =   "&Custom mapper variables…"
-         Enabled         =   0   'False
          Shortcut        =   {F12}
       End
       Begin VB.Menu menureset 
@@ -203,18 +202,18 @@ Public sam210 As Byte
 Public sam211 As Byte
 Public sam212 As Byte
 Public gb8110 As Byte
-Rem Public cvar1 As Long
-Rem Public cvar2 As Long
-Rem Public cvar3 As Long
-Rem Public cvar4 As Long
-Rem Public cvar5 As Long
-Rem Public cvar6 As Long
-Rem Public cvar7 As Long
-Rem Public cvar8 As Long
+Public cvar1 As Long
+Public cvar2 As Long
+Public cvar3 As Long
+Public cvar4 As Long
+Public cvar5 As Long
+Public cvar6 As Long
+Public cvar7 As Long
+Public cvar8 As Long
 
 Private Sub button_msv_Click()
     If mappertype.ListIndex = 25 Then
-        Rem var1 = cvar1 *cmsvs
+        var1 = cvar1
         var1ba = ToByteArray(var1)
         msv_sam2.sam210 = var1ba(3) Mod 2
         msv_sam2.sam211 = (var1ba(3) \ 2) Mod 2
@@ -222,15 +221,17 @@ Private Sub button_msv_Click()
         msv_sam2.Show 1
         var1ba(3) = sam210 + (2 * sam211) + (4 * sam212)
         var1 = ToLong(var1ba)
-        Rem refreshmsvs *cmsvs
+        refreshmsvs
+        verifymsvs
     ElseIf mappertype.ListIndex = 28 Then
-        Rem var1 = cvar1 *cmsvs
+        var1 = cvar1
         var1ba = ToByteArray(var1)
         msv_gb81.gb8110 = var1ba(3)
         msv_gb81.Show 1
         var1ba(3) = gb8110
         var1 = ToLong(var1ba)
-        Rem refreshmsvs *cmsvs
+        refreshmsvs
+        verifymsvs
     Else
         MsgBox "This button should be disabled. Please file a bug on GitHub. (ERROR 1046)", vbOKOnly, "GBXBuilder Error"
     End If
@@ -329,23 +330,44 @@ Private Sub mappertype_Click()
 End Sub
 
 Private Sub menucmsv_Click()
-    Rem cmsv.cvar1 = var1
-    Rem cmsv.cvar2 = var2
-    Rem cmsv.cvar3 = var3
-    Rem cmsv.cvar4 = var4
-    Rem cmsv.cvar5 = var5
-    Rem cmsv.cvar6 = var6
-    Rem cmsv.cvar7 = var7
-    Rem cmsv.cvar8 = var8
-    Rem cmsv.Show
-    Rem var1 = cvar1
-    Rem var2 = cvar2
-    Rem var3 = cvar3
-    Rem var4 = cvar4
-    Rem var5 = cvar5
-    Rem var6 = cvar6
-    Rem var7 = cvar7
-    Rem var8 = cvar8
+    cmsv.cvar1 = var1
+    cmsv.cvar2 = var2
+    cmsv.cvar3 = var3
+    cmsv.cvar4 = var4
+    cmsv.cvar5 = var5
+    cmsv.cvar6 = var6
+    cmsv.cvar7 = var7
+    cmsv.cvar8 = var8
+    cmsv.Show 1
+    var1 = cvar1
+    var2 = cvar2
+    var3 = cvar3
+    var4 = cvar4
+    var5 = cvar5
+    var6 = cvar6
+    var7 = cvar7
+    var8 = cvar8
+    verifymsvs
+End Sub
+
+Private Sub verifymsvs()
+    Dim msvset As Boolean
+    msvset = False
+    If var1 <> 0 Then msvset = True
+    If var2 <> 0 Then msvset = True
+    If var3 <> 0 Then msvset = True
+    If var4 <> 0 Then msvset = True
+    If var5 <> 0 Then msvset = True
+    If var6 <> 0 Then msvset = True
+    If var7 <> 0 Then msvset = True
+    If var8 <> 0 Then msvset = True
+    If msvset = True Then
+        menureset.Checked = False
+        menureset.Enabled = True
+    Else
+        menureset.Checked = True
+        menureset.Enabled = False
+    End If
 End Sub
 
 Private Sub menusave_Click()
@@ -388,7 +410,7 @@ End Sub
 
 Private Sub continuesave()
 On Error GoTo ErrHandler
-FileCopy original, CommonDialog1.filename
+    FileCopy original, CommonDialog1.filename
     ramsize = ramtext.Text
     If ramtext.Enabled = False Then
         ramsize = 0
@@ -603,42 +625,90 @@ FileCopy original, CommonDialog1.filename
     footer(14) = ramsizeba(1)
     footer(15) = ramsizeba(0)
     Rem MSVs
-    var1ba = ToByteArray(var1)
+    If var1 < 0 Then
+        var1 = var1 * (-1)
+        var1ba = ToByteArray(var1)
+        var1ba(3) = var1ba(3) + 128
+    Else
+        var1ba = ToByteArray(var1)
+    End If
     footer(16) = var1ba(3)
     footer(17) = var1ba(2)
     footer(18) = var1ba(1)
     footer(19) = var1ba(0)
-    var2ba = ToByteArray(var2)
+    If var2 < 0 Then
+        var2 = var2 * (-1)
+        var2ba = ToByteArray(var2)
+        var2ba(3) = var2ba(3) + 128
+    Else
+        var2ba = ToByteArray(var2)
+    End If
     footer(20) = var2ba(3)
     footer(21) = var2ba(2)
     footer(22) = var2ba(1)
     footer(23) = var2ba(0)
-    var3ba = ToByteArray(var3)
+    If var3 < 0 Then
+        var3 = var3 * (-1)
+        var3ba = ToByteArray(var3)
+        var3ba(3) = var3ba(3) + 128
+    Else
+        var3ba = ToByteArray(var3)
+    End If
     footer(24) = var3ba(3)
     footer(25) = var3ba(2)
     footer(26) = var3ba(1)
     footer(27) = var3ba(0)
-    var4ba = ToByteArray(var4)
+    If var4 < 0 Then
+        var4 = var4 * (-1)
+        var4ba = ToByteArray(var4)
+        var4ba(3) = var4ba(3) + 128
+    Else
+        var4ba = ToByteArray(var4)
+    End If
     footer(28) = var4ba(3)
     footer(29) = var4ba(2)
     footer(30) = var4ba(1)
     footer(31) = var4ba(0)
-    var5ba = ToByteArray(var5)
+    If var5 < 0 Then
+        var5 = var5 * (-1)
+        var5ba = ToByteArray(var5)
+        var5ba(3) = var5ba(3) + 128
+    Else
+        var5ba = ToByteArray(var5)
+    End If
     footer(32) = var5ba(3)
     footer(33) = var5ba(2)
     footer(34) = var5ba(1)
     footer(35) = var5ba(0)
-    var6ba = ToByteArray(var6)
+    If var6 < 0 Then
+        var6 = var6 * (-1)
+        var6ba = ToByteArray(var6)
+        var6ba(3) = var6ba(3) + 128
+    Else
+        var6ba = ToByteArray(var6)
+    End If
     footer(36) = var6ba(3)
     footer(37) = var6ba(2)
     footer(38) = var6ba(1)
     footer(39) = var6ba(0)
-    var7ba = ToByteArray(var7)
+    If var7 < 0 Then
+        var7 = var7 * (-1)
+        var7ba = ToByteArray(var7)
+        var7ba(3) = var7ba(3) + 128
+    Else
+        var7ba = ToByteArray(var7)
+    End If
     footer(40) = var7ba(3)
     footer(41) = var7ba(2)
     footer(42) = var7ba(1)
     footer(43) = var7ba(0)
-    var8ba = ToByteArray(var8)
+    If var8 < 0 Then
+        var8 = var8 * (-1)
+        var8ba = ToByteArray(var8)
+        var8ba(3) = var8ba(3) + 128
+    Else
+        var8ba = ToByteArray(var8)
+    End If
     footer(44) = var8ba(3)
     footer(45) = var8ba(2)
     footer(46) = var8ba(1)
@@ -837,57 +907,104 @@ On Error GoTo ErrHandler
             counter = counter - 1
             index = index + 1
         Loop While index < 48
-        Dim check As Long
-        check = 0
-        Do
-            counter = counter + 1
-            check = check + CLng(footer(counter))
-        Loop While counter < 47
-        If check <> 0 Then
-            menureset.Checked = False
-            menureset.Enabled = True
-        End If
         var1ba(3) = footer(16)
         var1ba(2) = footer(17)
         var1ba(1) = footer(18)
         var1ba(0) = footer(19)
-        var1 = ToLong(var1ba)
+        If var1ba(3) > 127 Then
+            var1ba(3) = var1ba(3) - 128
+            var1 = ToLong(var1ba)
+            var1 = var1 * (-1)
+            var1ba(3) = var1ba(3) + 128
+        Else
+            var1 = ToLong(var1ba)
+        End If
         var2ba(3) = footer(20)
         var2ba(2) = footer(21)
         var2ba(1) = footer(22)
         var2ba(0) = footer(23)
-        var2 = ToLong(var2ba)
+        If var2ba(3) > 127 Then
+            var2ba(3) = var2ba(3) - 128
+            var2 = ToLong(var2ba)
+            var2 = var2 * (-1)
+            var2ba(3) = var2ba(3) + 128
+        Else
+            var2 = ToLong(var2ba)
+        End If
         var3ba(3) = footer(24)
         var3ba(2) = footer(25)
         var3ba(1) = footer(26)
         var3ba(0) = footer(27)
-        var3 = ToLong(var3ba)
+        If var3ba(3) > 127 Then
+            var3ba(3) = var3ba(3) - 128
+            var3 = ToLong(var3ba)
+            var3 = var3 * (-1)
+            var3ba(3) = var3ba(3) + 128
+        Else
+            var3 = ToLong(var3ba)
+        End If
         var4ba(3) = footer(28)
         var4ba(2) = footer(29)
         var4ba(1) = footer(30)
         var4ba(0) = footer(31)
-        var4 = ToLong(var4ba)
+        If var4ba(3) > 127 Then
+            var4ba(3) = var4ba(3) - 128
+            var4 = ToLong(var4ba)
+            var4 = var4 * (-1)
+            var4ba(3) = var4ba(3) + 128
+        Else
+            var4 = ToLong(var4ba)
+        End If
         var5ba(3) = footer(32)
         var5ba(2) = footer(33)
         var5ba(1) = footer(34)
         var5ba(0) = footer(35)
-        var5 = ToLong(var5ba)
+        If var5ba(3) > 127 Then
+            var5ba(3) = var5ba(3) - 128
+            var5 = ToLong(var5ba)
+            var5 = var5 * (-1)
+            var5ba(3) = var5ba(3) + 128
+        Else
+            var5 = ToLong(var5ba)
+        End If
         var6ba(3) = footer(36)
         var6ba(2) = footer(37)
         var6ba(1) = footer(38)
         var6ba(0) = footer(39)
-        var6 = ToLong(var6ba)
+        If var6ba(3) > 127 Then
+            var6ba(3) = var6ba(3) - 128
+            var6 = ToLong(var6ba)
+            var6 = var6 * (-1)
+            var6ba(3) = var6ba(3) + 128
+        Else
+            var6 = ToLong(var6ba)
+        End If
         var7ba(3) = footer(40)
         var7ba(2) = footer(41)
         var7ba(1) = footer(42)
         var7ba(0) = footer(43)
-        var7 = ToLong(var7ba)
+        If var7ba(3) > 127 Then
+            var7ba(3) = var7ba(3) - 128
+            var7 = ToLong(var7ba)
+            var7 = var7 * (-1)
+            var7ba(3) = var7ba(3) + 128
+        Else
+            var7 = ToLong(var7ba)
+        End If
         var8ba(3) = footer(44)
         var8ba(2) = footer(45)
         var8ba(1) = footer(46)
         var8ba(0) = footer(47)
-        var8 = ToLong(var8ba)
-        Rem refreshmsvs *cmsvs
+        If var8ba(3) > 127 Then
+            var8ba(3) = var8ba(3) - 128
+            var8 = ToLong(var8ba)
+            var8 = var8 * (-1)
+            var8ba(3) = var8ba(3) + 128
+        Else
+            var8 = ToLong(var8ba)
+        End If
+        refreshmsvs
+        verifymsvs
         Get #1, LOF(1) - 59, battery
         isram.Value = battery
         Get #1, LOF(1) - 58, rumble
@@ -957,17 +1074,18 @@ Private Sub clearmsvs()
     var8ba(1) = 0
     var8ba(2) = 0
     var8ba(3) = 0
+    refreshmsvs
 End Sub
 
 Private Sub refreshmsvs()
-    Rem cvar1 = var1
-    Rem cvar2 = var2
-    Rem cvar3 = var3
-    Rem cvar4 = var4
-    Rem cvar5 = var5
-    Rem cvar6 = var6
-    Rem cvar7 = var7
-    Rem cvar8 = var8
+    cvar1 = var1
+    cvar2 = var2
+    cvar3 = var3
+    cvar4 = var4
+    cvar5 = var5
+    cvar6 = var6
+    cvar7 = var7
+    cvar8 = var8
 End Sub
 
 Public Function ToByteArray(ByVal lng As Long) As Byte()

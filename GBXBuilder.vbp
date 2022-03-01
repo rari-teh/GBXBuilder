@@ -8,6 +8,7 @@ Form=about.frm
 Module=countingpine; truncatefile.bas
 Form=msv_sam2.frm
 Form=msv_gb81.frm
+Form=cmsv.frm
 IconForm="config"
 Startup="config"
 HelpFile=""
