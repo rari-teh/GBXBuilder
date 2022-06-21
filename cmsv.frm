@@ -20,7 +20,7 @@ Begin VB.Form cmsv
       Left            =   3720
       TabIndex        =   8
       Top             =   840
-      Width           =   1215
+      Width           =   1095
    End
    Begin VB.TextBox sv8 
       Height          =   285

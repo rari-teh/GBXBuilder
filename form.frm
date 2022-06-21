@@ -80,7 +80,7 @@ Begin VB.Form config
       Height          =   315
       ItemData        =   "form.frx":1542
       Left            =   960
-      List            =   "form.frx":15A0
+      List            =   "form.frx":15A3
       TabIndex        =   1
       Text            =   "(no mapper)"
       Top             =   120
@@ -113,7 +113,7 @@ Begin VB.Form config
          Shortcut        =   ^S
       End
       Begin VB.Menu menustrip 
-         Caption         =   "Save ra&w dump…"
+         Caption         =   "Save ra&w image…"
          Enabled         =   0   'False
          Shortcut        =   ^R
       End
@@ -223,7 +223,7 @@ Private Sub button_msv_Click()
         var1 = ToLong(var1ba)
         refreshmsvs
         verifymsvs
-    ElseIf mappertype.ListIndex = 28 Then
+    ElseIf mappertype.ListIndex = 29 Then
         var1 = cvar1
         var1ba = ToByteArray(var1)
         msv_gb81.gb8110 = var1ba(3)
@@ -322,11 +322,11 @@ Private Sub isram_Click()
 End Sub
 
 Private Sub mappertype_Change()
-    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 28 Then button_msv.Enabled = True Else button_msv.Enabled = False
+    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 29 Then button_msv.Enabled = True Else button_msv.Enabled = False
 End Sub
 
 Private Sub mappertype_Click()
-    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 28 Then button_msv.Enabled = True Else button_msv.Enabled = False
+    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 29 Then button_msv.Enabled = True Else button_msv.Enabled = False
 End Sub
 
 Private Sub menucmsv_Click()
@@ -591,14 +591,20 @@ On Error GoTo ErrHandler
         mapper(1) = 71
         mapper(2) = 72
         mapper(3) = 75
-    Rem GB81
+    Rem VF01
     ElseIf mappertype.ListIndex = 28 Then
+        mapper(0) = 86
+        mapper(1) = 70
+        mapper(2) = 48
+        mapper(3) = 49
+    Rem GB81
+    ElseIf mappertype.ListIndex = 29 Then
         mapper(0) = 71
         mapper(1) = 66
         mapper(2) = 56
         mapper(3) = 49
     Rem TPP1
-    ElseIf mappertype.ListIndex = 29 Then
+    ElseIf mappertype.ListIndex = 30 Then
         mapper(0) = 84
         mapper(1) = 80
         mapper(2) = 80
@@ -894,8 +900,9 @@ On Error GoTo ErrHandler
         If mapper(0) = 83 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 50 Then index = 25
         If mapper(0) = 82 Then If mapper(1) = 79 Then If mapper(2) = 67 Then If mapper(3) = 75 Then index = 26
         If mapper(0) = 78 Then If mapper(1) = 71 Then If mapper(2) = 72 Then If mapper(3) = 75 Then index = 27
-        If mapper(0) = 71 Then If mapper(1) = 66 Then If mapper(2) = 56 Then If mapper(3) = 49 Then index = 28
-        If mapper(0) = 84 Then If mapper(1) = 80 Then If mapper(3) = 80 Then If mapper(3) = 49 Then index = 29
+        If mapper(0) = 86 Then If mapper(1) = 70 Then If mapper(2) = 48 Then If mapper(3) = 49 Then index = 28
+        If mapper(0) = 71 Then If mapper(1) = 66 Then If mapper(2) = 56 Then If mapper(3) = 49 Then index = 29
+        If mapper(0) = 84 Then If mapper(1) = 80 Then If mapper(3) = 80 Then If mapper(3) = 49 Then index = 30
         If index = 255 Then
             mappertype.Text = ToAscii(mapper)
         Else
