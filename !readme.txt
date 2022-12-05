@@ -1,0 +1,1 @@
+truncatefile.bas was made by countingpine.

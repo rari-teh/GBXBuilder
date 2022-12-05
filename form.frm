@@ -201,6 +201,7 @@ Rem MSV config forms communication variables
 Public sam210 As Byte
 Public sam211 As Byte
 Public sam212 As Byte
+Public vf0110 As Byte
 Public gb8110 As Byte
 Public cvar1 As Long
 Public cvar2 As Long
@@ -220,6 +221,15 @@ Private Sub button_msv_Click()
         msv_sam2.sam212 = (var1ba(3) \ 4) Mod 2
         msv_sam2.Show 1
         var1ba(3) = sam210 + (2 * sam211) + (4 * sam212)
+        var1 = ToLong(var1ba)
+        refreshmsvs
+        verifymsvs
+    ElseIf mappertype.ListIndex = 28 Then
+        var1 = cvar1
+        var1ba = ToByteArray(var1)
+        msv_vf01.vf0110 = var1ba(3)
+        msv_vf01.Show 1
+        var1ba(3) = vf0110
         var1 = ToLong(var1ba)
         refreshmsvs
         verifymsvs
@@ -322,11 +332,11 @@ Private Sub isram_Click()
 End Sub
 
 Private Sub mappertype_Change()
-    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 29 Then button_msv.Enabled = True Else button_msv.Enabled = False
+    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 28 Or mappertype.ListIndex = 29 Then button_msv.Enabled = True Else button_msv.Enabled = False
 End Sub
 
 Private Sub mappertype_Click()
-    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 29 Then button_msv.Enabled = True Else button_msv.Enabled = False
+    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 28 Or mappertype.ListIndex = 29 Then button_msv.Enabled = True Else button_msv.Enabled = False
 End Sub
 
 Private Sub menucmsv_Click()
