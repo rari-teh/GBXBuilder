@@ -55,7 +55,7 @@ On Error GoTo ErrHandler
     pcbtype.ListIndex = gb8110
     Exit Sub
 ErrHandler:
-    pcbtype.AddItem Hex$(gb8110)
+    pcbtype.AddItem Right("00" & Hex$(gb8110), 2)
     pcbtype.ListIndex = (pcbtype.ListCount - 1)
 End Sub
 

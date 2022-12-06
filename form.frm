@@ -213,6 +213,8 @@ Public cvar7 As Long
 Public cvar8 As Long
 
 Private Sub button_msv_Click()
+    Dim signtrip As Boolean
+    signtrip = False
     If mappertype.ListIndex = 25 Then
         var1 = cvar1
         var1ba = ToByteArray(var1)
@@ -225,26 +227,53 @@ Private Sub button_msv_Click()
         refreshmsvs
         verifymsvs
     ElseIf mappertype.ListIndex = 28 Then
-        var1 = cvar1
-        var1ba = ToByteArray(var1)
+        GoTo ListTypeInit
+Ret28:
+        vf0110 = var1ba(3)
         msv_vf01.vf0110 = var1ba(3)
         msv_vf01.Show 1
         var1ba(3) = vf0110
-        var1 = ToLong(var1ba)
-        refreshmsvs
-        verifymsvs
+		GoTo ListTypeEnd
     ElseIf mappertype.ListIndex = 29 Then
-        var1 = cvar1
-        var1ba = ToByteArray(var1)
+        GoTo ListTypeInit
+Ret29:
+        gb8110 = var1ba(3)
         msv_gb81.gb8110 = var1ba(3)
         msv_gb81.Show 1
         var1ba(3) = gb8110
-        var1 = ToLong(var1ba)
-        refreshmsvs
-        verifymsvs
+        GoTo ListTypeEnd
     Else
         MsgBox "This button should be disabled. Please file a bug on GitHub. (ERROR 1046)", vbOKOnly, "GBXBuilder Error"
     End If
+    Exit Sub
+ListTypeInit:
+    var1 = cvar1
+    If (var1 < 0) Then
+        signtrip = True
+        var1 = var1 * -1
+    End If
+    var1ba = ToByteArray(var1)
+    If signtrip Then
+        var1ba(3) = var1ba(3) + 128
+        signtrip = False
+    End If
+    If (mappertype.ListIndex = 28) Then GoTo Ret28
+    If (mappertype.ListIndex = 29) Then GoTo Ret29
+    MsgBox "If this popup appears, please close the program and file a bug on GitHub. (ERROR 1046-2)", vbOKOnly, "GBXBuilder Error"
+	Exit Sub
+ListTypeEnd:
+    If (var1ba(3) > 127) Then
+        signtrip = True
+        var1ba(3) = var1ba(3) - 128
+    End If
+    var1 = ToLong(var1ba)
+    If signtrip Then
+        var1 = var1 * -1
+        signtrip = False
+    End If
+    refreshmsvs
+    verifymsvs
+	Exit Sub
 End Sub
 
 Private Sub Form_Load()
@@ -340,14 +369,6 @@ Private Sub mappertype_Click()
 End Sub
 
 Private Sub menucmsv_Click()
-    cmsv.cvar1 = var1
-    cmsv.cvar2 = var2
-    cmsv.cvar3 = var3
-    cmsv.cvar4 = var4
-    cmsv.cvar5 = var5
-    cmsv.cvar6 = var6
-    cmsv.cvar7 = var7
-    cmsv.cvar8 = var8
     cmsv.Show 1
     var1 = cvar1
     var2 = cvar2

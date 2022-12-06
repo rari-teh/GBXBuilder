@@ -54,12 +54,14 @@ On Error GoTo ErrHandler
     origcount = initvalue.ListCount
     If vf0110 = 16 Then
         initvalue.ListIndex = 1
+    ElseIf vf0110 = 1 Then
+        GoTo ErrHandler
     Else
         initvalue.ListIndex = vf0110
     End If
     Exit Sub
 ErrHandler:
-    initvalue.AddItem Hex$(vf0110)
+    initvalue.AddItem Right("00" & Hex$(vf0110), 2)
     initvalue.ListIndex = (initvalue.ListCount - 1)
 End Sub
 
