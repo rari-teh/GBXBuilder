@@ -5,7 +5,7 @@ Begin VB.Form config
    Caption         =   "GBXBuilder 1.0"
    ClientHeight    =   1560
    ClientLeft      =   150
-   ClientTop       =   795
+   ClientTop       =   840
    ClientWidth     =   3600
    Icon            =   "form.frx":0000
    LinkTopic       =   "Form1"
@@ -78,9 +78,9 @@ Begin VB.Form config
    End
    Begin VB.ComboBox mappertype 
       Height          =   315
-      ItemData        =   "form.frx":1542
+      ItemData        =   "form.frx":1042
       Left            =   960
-      List            =   "form.frx":15A3
+      List            =   "form.frx":10A6
       TabIndex        =   1
       Text            =   "(no mapper)"
       Top             =   120
@@ -159,6 +159,7 @@ Private suggestion As String
 Private prevoriginal As String
 Private prevsuggestion As String
 Private previsgbx As Boolean
+Private arg As String
 
 Rem Flags
 Private isgbx As Boolean
@@ -215,7 +216,7 @@ Public cvar8 As Long
 Private Sub button_msv_Click()
     Dim signtrip As Boolean
     signtrip = False
-    If mappertype.ListIndex = 25 Then
+    If mappertype.ListIndex = 26 Then
         var1 = cvar1
         var1ba = ToByteArray(var1)
         msv_sam2.sam210 = var1ba(3) Mod 2
@@ -226,17 +227,17 @@ Private Sub button_msv_Click()
         var1 = ToLong(var1ba)
         refreshmsvs
         verifymsvs
-    ElseIf mappertype.ListIndex = 28 Then
+    ElseIf mappertype.ListIndex = 29 Then
         GoTo ListTypeInit
-Ret28:
+Ret29:
         vf0110 = var1ba(3)
         msv_vf01.vf0110 = var1ba(3)
         msv_vf01.Show 1
         var1ba(3) = vf0110
-		GoTo ListTypeEnd
-    ElseIf mappertype.ListIndex = 29 Then
+        GoTo ListTypeEnd
+    ElseIf mappertype.ListIndex = 30 Then
         GoTo ListTypeInit
-Ret29:
+Ret30:
         gb8110 = var1ba(3)
         msv_gb81.gb8110 = var1ba(3)
         msv_gb81.Show 1
@@ -257,10 +258,10 @@ ListTypeInit:
         var1ba(3) = var1ba(3) + 128
         signtrip = False
     End If
-    If (mappertype.ListIndex = 28) Then GoTo Ret28
     If (mappertype.ListIndex = 29) Then GoTo Ret29
+    If (mappertype.ListIndex = 30) Then GoTo Ret30
     MsgBox "If this popup appears, please close the program and file a bug on GitHub. (ERROR 1046-2)", vbOKOnly, "GBXBuilder Error"
-	Exit Sub
+        Exit Sub
 ListTypeEnd:
     If (var1ba(3) > 127) Then
         signtrip = True
@@ -273,11 +274,12 @@ ListTypeEnd:
     End If
     refreshmsvs
     verifymsvs
-	Exit Sub
+        Exit Sub
 End Sub
 
 Private Sub Form_Load()
 On Error GoTo ErrHandler
+    arg = Command
     gbx1 = True
     isgbx = False
     original = ""
@@ -361,11 +363,11 @@ Private Sub isram_Click()
 End Sub
 
 Private Sub mappertype_Change()
-    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 28 Or mappertype.ListIndex = 29 Then button_msv.Enabled = True Else button_msv.Enabled = False
+    If mappertype.ListIndex = 26 Or mappertype.ListIndex = 29 Or mappertype.ListIndex = 30 Then button_msv.Enabled = True Else button_msv.Enabled = False
 End Sub
 
 Private Sub mappertype_Click()
-    If mappertype.ListIndex = 25 Or mappertype.ListIndex = 28 Or mappertype.ListIndex = 29 Then button_msv.Enabled = True Else button_msv.Enabled = False
+    If mappertype.ListIndex = 26 Or mappertype.ListIndex = 29 Or mappertype.ListIndex = 30 Then button_msv.Enabled = True Else button_msv.Enabled = False
 End Sub
 
 Private Sub menucmsv_Click()
@@ -484,158 +486,164 @@ On Error GoTo ErrHandler
         mapper(1) = 66
         mapper(2) = 67
         mapper(3) = 53
-    Rem MBC7
+    Rem MBC6
     ElseIf mappertype.ListIndex = 5 Then
+        mapper(0) = 77
+        mapper(1) = 66
+        mapper(2) = 67
+        mapper(3) = 54
+    Rem MBC7
+    ElseIf mappertype.ListIndex = 6 Then
         mapper(0) = 77
         mapper(1) = 66
         mapper(2) = 67
         mapper(3) = 55
     Rem MB1M
-    ElseIf mappertype.ListIndex = 6 Then
+    ElseIf mappertype.ListIndex = 7 Then
         mapper(0) = 77
         mapper(1) = 66
         mapper(2) = 49
         mapper(3) = 77
     Rem MMM1
-    ElseIf mappertype.ListIndex = 7 Then
+    ElseIf mappertype.ListIndex = 8 Then
         mapper(0) = 77
         mapper(1) = 77
         mapper(2) = 77
         mapper(3) = 49
     Rem CAMR
-    ElseIf mappertype.ListIndex = 8 Then
+    ElseIf mappertype.ListIndex = 9 Then
         mapper(0) = 67
         mapper(1) = 65
         mapper(2) = 77
         mapper(3) = 82
     Rem HUC1
-    ElseIf mappertype.ListIndex = 9 Then
+    ElseIf mappertype.ListIndex = 10 Then
         mapper(0) = 72
         mapper(1) = 85
         mapper(2) = 67
         mapper(3) = 49
     Rem HUC3
-    ElseIf mappertype.ListIndex = 10 Then
+    ElseIf mappertype.ListIndex = 11 Then
         mapper(0) = 72
         mapper(1) = 85
         mapper(2) = 67
         mapper(3) = 51
     Rem TAM5
-    ElseIf mappertype.ListIndex = 11 Then
+    ElseIf mappertype.ListIndex = 12 Then
         mapper(0) = 84
         mapper(1) = 65
         mapper(2) = 77
         mapper(3) = 53
     Rem M161
-    ElseIf mappertype.ListIndex = 12 Then
+    ElseIf mappertype.ListIndex = 13 Then
         mapper(0) = 77
         mapper(1) = 49
         mapper(2) = 54
         mapper(3) = 49
     Rem BBD
-    ElseIf mappertype.ListIndex = 13 Then
+    ElseIf mappertype.ListIndex = 14 Then
         mapper(0) = 66
         mapper(1) = 66
         mapper(2) = 68
         mapper(3) = 0
     Rem HITK
-    ElseIf mappertype.ListIndex = 14 Then
+    ElseIf mappertype.ListIndex = 15 Then
         mapper(0) = 72
         mapper(1) = 73
         mapper(2) = 84
         mapper(3) = 75
     Rem SNTX
-    ElseIf mappertype.ListIndex = 15 Then
+    ElseIf mappertype.ListIndex = 16 Then
         mapper(0) = 83
         mapper(1) = 78
         mapper(2) = 84
         mapper(3) = 88
     Rem NTO1
-    ElseIf mappertype.ListIndex = 16 Then
+    ElseIf mappertype.ListIndex = 17 Then
         mapper(0) = 78
         mapper(1) = 84
         mapper(2) = 79
         mapper(3) = 49
     Rem NTO2
-    ElseIf mappertype.ListIndex = 17 Then
+    ElseIf mappertype.ListIndex = 18 Then
         mapper(0) = 78
         mapper(1) = 84
         mapper(2) = 79
         mapper(3) = 50
     Rem NTN
-    ElseIf mappertype.ListIndex = 18 Then
+    ElseIf mappertype.ListIndex = 19 Then
         mapper(0) = 78
         mapper(1) = 84
         mapper(2) = 78
         mapper(3) = 0
     Rem LICH
-    ElseIf mappertype.ListIndex = 19 Then
+    ElseIf mappertype.ListIndex = 20 Then
         mapper(0) = 76
         mapper(1) = 73
         mapper(2) = 67
         mapper(3) = 72
     Rem LBMC
-    ElseIf mappertype.ListIndex = 20 Then
+    ElseIf mappertype.ListIndex = 21 Then
         mapper(0) = 76
         mapper(1) = 66
         mapper(2) = 77
         mapper(3) = 67
     Rem LIBA
-    ElseIf mappertype.ListIndex = 21 Then
+    ElseIf mappertype.ListIndex = 22 Then
         mapper(0) = 76
         mapper(1) = 73
         mapper(2) = 66
         mapper(3) = 65
     Rem PKJD
-    ElseIf mappertype.ListIndex = 22 Then
+    ElseIf mappertype.ListIndex = 23 Then
         mapper(0) = 80
         mapper(1) = 75
         mapper(2) = 74
         mapper(3) = 68
     Rem WISD
-    ElseIf mappertype.ListIndex = 23 Then
+    ElseIf mappertype.ListIndex = 24 Then
         mapper(0) = 87
         mapper(1) = 73
         mapper(2) = 83
         mapper(3) = 68
     Rem SAM1
-    ElseIf mappertype.ListIndex = 24 Then
+    ElseIf mappertype.ListIndex = 25 Then
         mapper(0) = 83
         mapper(1) = 65
         mapper(2) = 77
         mapper(3) = 49
     Rem SAM2
-    ElseIf mappertype.ListIndex = 25 Then
+    ElseIf mappertype.ListIndex = 26 Then
         mapper(0) = 83
         mapper(1) = 65
         mapper(2) = 77
         mapper(3) = 50
     Rem ROCK
-    ElseIf mappertype.ListIndex = 26 Then
+    ElseIf mappertype.ListIndex = 27 Then
         mapper(0) = 82
         mapper(1) = 79
         mapper(2) = 67
         mapper(3) = 75
     Rem NGHK
-    ElseIf mappertype.ListIndex = 27 Then
+    ElseIf mappertype.ListIndex = 28 Then
         mapper(0) = 78
         mapper(1) = 71
         mapper(2) = 72
         mapper(3) = 75
     Rem VF01
-    ElseIf mappertype.ListIndex = 28 Then
+    ElseIf mappertype.ListIndex = 29 Then
         mapper(0) = 86
         mapper(1) = 70
         mapper(2) = 48
         mapper(3) = 49
     Rem GB81
-    ElseIf mappertype.ListIndex = 29 Then
+    ElseIf mappertype.ListIndex = 30 Then
         mapper(0) = 71
         mapper(1) = 66
         mapper(2) = 56
         mapper(3) = 49
     Rem TPP1
-    ElseIf mappertype.ListIndex = 30 Then
+    ElseIf mappertype.ListIndex = 31 Then
         mapper(0) = 84
         mapper(1) = 80
         mapper(2) = 80
@@ -832,16 +840,27 @@ End Sub
 Public Sub loadfile()
     previsgbx = isgbx
     isgbx = False
-    With CommonDialog1
-        .CancelError = True
-        .DialogTitle = "Open Game Boy (Color) ROM"
-        .Filter = "Game Boy ROMs (*.gb; *.gbc; *.gbx; *.bin)|*.gb;*.gbc;*.gbx;*.bin|"
-        .ShowOpen
-    End With
-    Open CommonDialog1.filename For Binary As #1
+    If Not arg = "" Then
+        If Left$(arg, 1) = """" Then
+            arg = Mid$(arg, 2, Len(arg) - 2)
+        End If
+        If Dir$(arg) = "" Then GoTo InvalidCommand
+        Open arg For Binary As #1
+        original = arg
+        arg = ""
+    Else
+InvalidCommand:
+        With CommonDialog1
+            .CancelError = True
+            .DialogTitle = "Open Game Boy (Color) ROM"
+            .Filter = "Game Boy ROMs (*.gb; *.gbc; *.gbx; *.bin)|*.gb;*.gbc;*.gbx;*.bin|"
+            .ShowOpen
+        End With
+        Open CommonDialog1.filename For Binary As #1
+        original = CommonDialog1.filename
+    End If
     prevoriginal = original
     prevsuggestion = suggestion
-    original = CommonDialog1.filename
     Dim tempst As String
     tempst = Mid$(original, InStrRev(original, "\") + 1)
     suggestion = Left$(tempst, InStrRev(tempst, ".") - 1)
@@ -908,32 +927,33 @@ On Error GoTo ErrHandler
         If mapper(0) = 77 Then If mapper(1) = 66 Then If mapper(2) = 67 Then If mapper(3) = 50 Then index = 2
         If mapper(0) = 77 Then If mapper(1) = 66 Then If mapper(2) = 67 Then If mapper(3) = 51 Then index = 3
         If mapper(0) = 77 Then If mapper(1) = 66 Then If mapper(2) = 67 Then If mapper(3) = 53 Then index = 4
-        If mapper(0) = 77 Then If mapper(1) = 66 Then If mapper(2) = 67 Then If mapper(3) = 55 Then index = 5
-        If mapper(0) = 77 Then If mapper(1) = 66 Then If mapper(2) = 49 Then If mapper(3) = 77 Then index = 6
-        If mapper(0) = 77 Then If mapper(1) = 77 Then If mapper(2) = 77 Then If mapper(3) = 49 Then index = 7
-        If mapper(0) = 67 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 82 Then index = 8
-        If mapper(0) = 72 Then If mapper(1) = 85 Then If mapper(2) = 67 Then If mapper(3) = 49 Then index = 9
-        If mapper(0) = 72 Then If mapper(1) = 85 Then If mapper(2) = 67 Then If mapper(3) = 51 Then index = 10
-        If mapper(0) = 84 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 53 Then index = 11
-        If mapper(0) = 77 Then If mapper(1) = 49 Then If mapper(2) = 54 Then If mapper(3) = 49 Then index = 12
-        If mapper(0) = 66 Then If mapper(1) = 66 Then If mapper(2) = 68 Then If mapper(3) = 0 Then index = 13
-        If mapper(0) = 72 Then If mapper(1) = 73 Then If mapper(2) = 84 Then If mapper(3) = 75 Then index = 14
-        If mapper(0) = 83 Then If mapper(1) = 78 Then If mapper(2) = 84 Then If mapper(3) = 88 Then index = 15
-        If mapper(0) = 78 Then If mapper(1) = 84 Then If mapper(2) = 79 Then If mapper(3) = 49 Then index = 16
-        If mapper(0) = 78 Then If mapper(1) = 84 Then If mapper(2) = 79 Then If mapper(3) = 50 Then index = 17
-        If mapper(0) = 78 Then If mapper(1) = 84 Then If mapper(2) = 78 Then If mapper(3) = 0 Then index = 18
-        If mapper(0) = 76 Then If mapper(1) = 73 Then If mapper(2) = 67 Then If mapper(3) = 72 Then index = 19
-        If mapper(0) = 76 Then If mapper(1) = 66 Then If mapper(2) = 77 Then If mapper(3) = 67 Then index = 20
-        If mapper(0) = 76 Then If mapper(1) = 73 Then If mapper(2) = 66 Then If mapper(3) = 65 Then index = 21
-        If mapper(0) = 80 Then If mapper(1) = 75 Then If mapper(2) = 74 Then If mapper(3) = 68 Then index = 22
-        If mapper(0) = 87 Then If mapper(1) = 73 Then If mapper(2) = 83 Then If mapper(3) = 68 Then index = 23
-        If mapper(0) = 83 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 49 Then index = 24
-        If mapper(0) = 83 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 50 Then index = 25
-        If mapper(0) = 82 Then If mapper(1) = 79 Then If mapper(2) = 67 Then If mapper(3) = 75 Then index = 26
-        If mapper(0) = 78 Then If mapper(1) = 71 Then If mapper(2) = 72 Then If mapper(3) = 75 Then index = 27
-        If mapper(0) = 86 Then If mapper(1) = 70 Then If mapper(2) = 48 Then If mapper(3) = 49 Then index = 28
-        If mapper(0) = 71 Then If mapper(1) = 66 Then If mapper(2) = 56 Then If mapper(3) = 49 Then index = 29
-        If mapper(0) = 84 Then If mapper(1) = 80 Then If mapper(3) = 80 Then If mapper(3) = 49 Then index = 30
+        If mapper(0) = 77 Then If mapper(1) = 66 Then If mapper(2) = 67 Then If mapper(3) = 54 Then index = 5
+        If mapper(0) = 77 Then If mapper(1) = 66 Then If mapper(2) = 67 Then If mapper(3) = 55 Then index = 6
+        If mapper(0) = 77 Then If mapper(1) = 66 Then If mapper(2) = 49 Then If mapper(3) = 77 Then index = 7
+        If mapper(0) = 77 Then If mapper(1) = 77 Then If mapper(2) = 77 Then If mapper(3) = 49 Then index = 8
+        If mapper(0) = 67 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 82 Then index = 9
+        If mapper(0) = 72 Then If mapper(1) = 85 Then If mapper(2) = 67 Then If mapper(3) = 49 Then index = 10
+        If mapper(0) = 72 Then If mapper(1) = 85 Then If mapper(2) = 67 Then If mapper(3) = 51 Then index = 11
+        If mapper(0) = 84 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 53 Then index = 12
+        If mapper(0) = 77 Then If mapper(1) = 49 Then If mapper(2) = 54 Then If mapper(3) = 49 Then index = 13
+        If mapper(0) = 66 Then If mapper(1) = 66 Then If mapper(2) = 68 Then If mapper(3) = 0 Then index = 14
+        If mapper(0) = 72 Then If mapper(1) = 73 Then If mapper(2) = 84 Then If mapper(3) = 75 Then index = 15
+        If mapper(0) = 83 Then If mapper(1) = 78 Then If mapper(2) = 84 Then If mapper(3) = 88 Then index = 16
+        If mapper(0) = 78 Then If mapper(1) = 84 Then If mapper(2) = 79 Then If mapper(3) = 49 Then index = 17
+        If mapper(0) = 78 Then If mapper(1) = 84 Then If mapper(2) = 79 Then If mapper(3) = 50 Then index = 18
+        If mapper(0) = 78 Then If mapper(1) = 84 Then If mapper(2) = 78 Then If mapper(3) = 0 Then index = 19
+        If mapper(0) = 76 Then If mapper(1) = 73 Then If mapper(2) = 67 Then If mapper(3) = 72 Then index = 20
+        If mapper(0) = 76 Then If mapper(1) = 66 Then If mapper(2) = 77 Then If mapper(3) = 67 Then index = 21
+        If mapper(0) = 76 Then If mapper(1) = 73 Then If mapper(2) = 66 Then If mapper(3) = 65 Then index = 22
+        If mapper(0) = 80 Then If mapper(1) = 75 Then If mapper(2) = 74 Then If mapper(3) = 68 Then index = 23
+        If mapper(0) = 87 Then If mapper(1) = 73 Then If mapper(2) = 83 Then If mapper(3) = 68 Then index = 24
+        If mapper(0) = 83 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 49 Then index = 25
+        If mapper(0) = 83 Then If mapper(1) = 65 Then If mapper(2) = 77 Then If mapper(3) = 50 Then index = 26
+        If mapper(0) = 82 Then If mapper(1) = 79 Then If mapper(2) = 67 Then If mapper(3) = 75 Then index = 27
+        If mapper(0) = 78 Then If mapper(1) = 71 Then If mapper(2) = 72 Then If mapper(3) = 75 Then index = 28
+        If mapper(0) = 86 Then If mapper(1) = 70 Then If mapper(2) = 48 Then If mapper(3) = 49 Then index = 29
+        If mapper(0) = 71 Then If mapper(1) = 66 Then If mapper(2) = 56 Then If mapper(3) = 49 Then index = 30
+        If mapper(0) = 84 Then If mapper(1) = 80 Then If mapper(3) = 80 Then If mapper(3) = 49 Then index = 31
         If index = 255 Then
             mappertype.Text = ToAscii(mapper)
         Else

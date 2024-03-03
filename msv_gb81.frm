@@ -24,9 +24,9 @@ Begin VB.Form msv_gb81
    End
    Begin VB.ComboBox pcbtype 
       Height          =   315
-      ItemData        =   "msv_gb81.frx":1542
+      ItemData        =   "msv_gb81.frx":1042
       Left            =   600
-      List            =   "msv_gb81.frx":154C
+      List            =   "msv_gb81.frx":104C
       Style           =   2  'Dropdown List
       TabIndex        =   0
       Top             =   120

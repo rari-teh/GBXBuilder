@@ -24,9 +24,9 @@ Begin VB.Form msv_vf01
    End
    Begin VB.ComboBox initvalue 
       Height          =   315
-      ItemData        =   "msv_vf01.frx":1542
+      ItemData        =   "msv_vf01.frx":1042
       Left            =   1560
-      List            =   "msv_vf01.frx":154C
+      List            =   "msv_vf01.frx":104C
       Style           =   2  'Dropdown List
       TabIndex        =   0
       Top             =   120
