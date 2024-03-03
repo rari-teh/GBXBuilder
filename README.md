@@ -8,4 +8,4 @@ This program uses truncatefile.bas by [countingpine](https://github.com/counting
 Made with Microsoft Visual Basic 6.0
 
 ## Requirement
-This program requires the Common Dialog ActiveX Control (COMDLG32.OCX). If you get a missing file error, you should install [Visual Basic 6.0 Runtime Plus](https://sourceforge.net/projects/vb6extendedruntime/files/latest/download).
+This program requires the Common Dialog ActiveX Control (COMDLG32.OCX). If you get a missing file error, you should install the Runtime Controls and Components from [Visual Basic 6.0 Runtime Plus](https://sourceforge.net/projects/vb6extendedruntime/files/latest/download).
